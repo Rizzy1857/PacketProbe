@@ -77,8 +77,8 @@ PacketProbe v1.0 - Network Sniffer is running... (Press Ctrl+C to stop)
 
 ##  Troubleshooting
 
-- ** WinPcap/Npcap Error?** → Ensure **Npcap** is installed in *WinPcap-compatible mode*.
-- ** No Packets Showing?** → Run the script as **Administrator**.
+- **WinPcap/Npcap Error?** → Ensure **Npcap** is installed in *WinPcap-compatible mode*.
+- **No Packets Showing?** → Run the script as **Administrator**.
 - **Still stuck?** → Check firewall settings or try generating traffic (e.g., `ping google.com`).
 
 ---
