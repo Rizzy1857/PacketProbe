@@ -1,29 +1,33 @@
-from scapy.all import sniff, IP, TCP, UDP, ICMP
+import argparse
+from scapy.all import sniff, IP
+from packet_filter import packet_matches_filter
+
+# Mapping protocol numbers to readable names
+PROTOCOLS = {
+    1: "ICMP",
+    6: "TCP",
+    17: "UDP"
+}
 
 def packet_callback(packet):
-    # Checks if the packet has an IP layer
-    if IP in packet:
-        proto = ''
-        if TCP in packet:
-            proto = 'TCP'           #for TCP in packet
-        elif UDP in packet:
-            proto = 'UDP'           #for UDP in packet
-        elif ICMP in packet:
-            proto = 'ICMP'          #for ICMP in packet
-        else:
-            proto = 'OTHER'         #if none above is the one
-        
-        # Print packet details
-        print(f"[{proto}] {packet[IP].src} --> {packet[IP].dst}")
+#Prints the protocol name instead of numbers [6] for TCP, [17] UDP
+    if packet.haslayer(IP):
+        ip_layer = packet[IP]
+        proto_num = ip_layer.proto
+        proto_name = PROTOCOLS.get(proto_num, f"Unknown({proto_num})")
+        print(f"[{proto_name}] {ip_layer.src} --> {ip_layer.dst}")
 
 def main():
-    print("NetSleuth v1.0 - Network Sniffer is running... (Press Ctrl+C to stop)")
-    try:
-        sniff(prn=packet_callback, store=False)
-    except KeyboardInterrupt:
-        print("\n[!] Sniffer stopped by user.")
-    except Exception as e:
-        print(f"[!] Error: {e}")
+    parser = argparse.ArgumentParser(description="NetSleuth - A Simple Network Sniffer with Filtering")
+    parser.add_argument("--protocol", help="Filter by protocol (TCP, UDP, ICMP)")
+    parser.add_argument("--src-ip", help="Filter by source IP address")
+    parser.add_argument("--dst-ip", help="Filter by destination IP address")
+    args = parser.parse_args()
+
+    print("Starting packet capture... Press Ctrl+C to stop.")
+
+    # Start sniffing with filtering applied
+    sniff(prn=lambda pkt: packet_callback(pkt) if packet_matches_filter(pkt, args.protocol, args.src_ip, args.dst_ip) else None, store=False)
 
 if __name__ == "__main__":
     main()
