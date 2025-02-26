@@ -11,6 +11,48 @@ A **simple yet powerful network sniffer** built with Python using **Scapy**. It 
 -  **Detects protocols:** TCP, UDP, ICMP, and others
 -  **Lightweight & beginner-friendly**
 
+# PacketProbe v1.1 - Changelog & Features
+
+## New Features & Improvements
+
+### Packet Filtering
+- Users can now filter packets based on **protocol (TCP/UDP/ICMP), source IP, and destination IP**.
+- Implemented through `packet_filter.py`, ensuring cleaner and more precise packet capture.
+
+### Logging System
+- **Raw logs** are now stored in `logs/logs.txt` for easy review.
+- Logs include **timestamp, source IP, destination IP, protocol, and packet length**.
+
+### Database Integration
+- Introduced **SQLite-based packet logging** (`packet_logs.db` in `data/`).
+- **All captured packets are logged into a structured database** for better analysis and retrieval.
+- `db_handler.py` manages database operations (**storing logs, ensuring table structure**).
+
+### Database Log Viewer (`check_db.py`)
+- Easily retrieve and display stored packet logs in a **formatted table**.
+- Prevents crashes with **error handling & empty database checks**.
+
+---
+
+## How to Use
+
+### Run the Packet Sniffer
+```bash
+python main.py --protocol TCP
+```
+*(Modify filters as needed: `--protocol UDP` or `--src-ip 192.168.1.1`)*
+
+### View Logs (Raw TXT Format)
+```bash
+cat logs/logs.txt
+```
+
+### Check Stored Logs in Database
+```bash
+python check_db.py
+```
+*(Displays packets in a table format from `packet_logs.db`.)*
+
 ---
 
 ##  Requirements
