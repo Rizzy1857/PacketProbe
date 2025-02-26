@@ -1,8 +1,8 @@
 import argparse
 from scapy.all import sniff, IP
 from packet_filter import packet_matches_filter
-from db_handler import log_packet 
-
+from logs import write_log
+from db_handler import log_packet
 # Mapping protocol numbers to readable names
 PROTOCOLS = {
     1: "ICMP",
@@ -21,12 +21,22 @@ def packet_callback(packet, args):
         if packet_matches_filter(packet, args.protocol, args.src_ip, args.dst_ip):
             print(f"[{proto_name}] {ip_layer.src} --> {ip_layer.dst}")
 
-            # Log packet into the database
+            #log packet into the db
             log_packet(
                 timestamp=str(packet.time),
                 src_ip=ip_layer.src,
                 dst_ip=ip_layer.dst,
-                protocol=proto_name
+                protocol=proto_name,
+                length= len(packet)
+            )
+
+            # Log packet into the logs
+            write_log(
+                timestamp=str(packet.time),
+                src_ip=ip_layer.src,
+                dst_ip=ip_layer.dst,
+                protocol=proto_name,
+                length= len(packet)
             )
 
 def main():
